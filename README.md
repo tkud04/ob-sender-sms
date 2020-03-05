@@ -1,2 +1,2 @@
-# ob-sender-sms
-Async USA SMS sender
+# ob-sender
+Sender app for Ob's friend
