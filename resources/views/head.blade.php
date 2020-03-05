@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <title>@yield('title') - JS Async  Sender</title>
+    <title>@yield('title') - USA SMS Sender</title>
 	   <link rel="stylesheet" href="css/lib/html5-editor/bootstrap-wysihtml5.css" />
     <!-- Bootstrap Core CSS -->
     <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">

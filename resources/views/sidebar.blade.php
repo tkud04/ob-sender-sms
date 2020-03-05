@@ -7,6 +7,7 @@
                     <ul id="sidebarnav">
                         <li class="nav-devider"></li>
                         <li class="nav-label">Home</li>
+                        <li class="nav-label">SMS left: <span id="bb">{{$user->balance}}</span></li>
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->

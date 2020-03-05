@@ -1,7 +1,8 @@
 let ll = [];
 let i = 0;
 let dt;
-let msg = "default",numbers="",
+let bb = $('#bb').html();
+let msg = "default",numbers="";
 
 (function($) {
   "use strict"; // Start of use strict
@@ -9,8 +10,8 @@ let msg = "default",numbers="",
          
 	
   	$("#form-submit").click(function(e){
-		hideErrorMessages();
 		//console.log("form submit");
+		
 		$('#mailer-results').html("");
 		e.preventDefault();
 	     msg = $('#msg').val(), numbers = $('#to').val();	  
@@ -23,7 +24,13 @@ let msg = "default",numbers="",
 	
 		else{
 			ll = numbers.split("\n");
-		   bomb();
+			if(bb < 1){
+				alert("Your account balance is not sufficient for this transaction");
+			}
+			else{
+			  bomb();
+			}
+		   
 		}
 		
 	});   	
@@ -35,6 +42,7 @@ function bomb(){
     let url = `${location.href}/sendd`;
 	
 	let to = ll[i];
+	let uuu = $('#uuu').val();
 	
 	let dt = new FormData();
 	dt.append('msg',msg);  dt.append('to',to);  dt.append('_token',uuu); 
@@ -58,37 +66,33 @@ function bomb(){
 	   //console.log(response);
        let ret = JSON.parse(response);
 		  console.log(ret);
-		   $('#mailer-results').append("<br><p class='text-success'>" + response + "</p>");
-	/**
-	   if(ret['status'] == "error"){
-		   $('#mailer-results').append("<br><p class='text-danger'>An error occured sending to " + em + "</p>");
+		  // $('#mailer-results').append("<br><p class='text-success'>" + response + "</p>");
+	
+	   if(ret['status'] == "queued" || ret['status'] == "sent"){
+		   $('#mailer-results').append("<br><p class='text-success'>SMS sent to " + to + "</p>");   
+		   decreaseBalance();
+		   
 	   }
-	   else if(ret['status'] == "error-validation"){
-		   $('#mailer-results').append("<br><p class='text-danger'>A validation error occured sending to " + em + "</p>");
+	   else{
+		   $('#mailer-results').append("<br><p class='text-danger'>An error occured sending to " + to + "</p>");
 	   }
-	   else if(ret['message'] == "Queued. Thank you."){
-			 $('#mailer-results').append("<br><p class='text-success'>Email sent to " + em + "</p>");    
-	   }
-	   			// $('#mailer-results').append("<br><p class='text-success'>Email sent to " + dt.em + "</p>");    
 	   
 	   setTimeout(function(){
 		   //console.log("data sent: " + dt);
 		   ++i; 
 		    if(i < ll.length) bomb();
 		   },5000);
-	**/
+	   i = 0;
      }
    });
 }
 
 function hideErrorMessages(){
-	     $("#error-sender-name").hide();
-         $("#error-sender-email").hide();
-         $("#error-subject").hide();
-         $("#error-smtp-server").hide();
-         $("#error-smtp-port").hide();
-         $("#error-smtp-username").hide();
-         $("#error-smtp-password").hide();
-         $("#error-messages").hide();
-         $("#error-leads").hide();
+	     $("#error-msg").hide();
+         $("#error-to").hide();
+}
+
+function decreaseBalance(){
+	bb--;
+	$('#bb').html(bb);
 }

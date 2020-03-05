@@ -6,6 +6,7 @@ use Crypt;
 use Carbon\Carbon; 
 use Mail;
 use Auth;
+use App\User;
 use \Swift_Mailer;
 use \Swift_SmtpTransport;
 use GuzzleHttp\Client;
@@ -15,7 +16,18 @@ use GuzzleHttp\Exception\RequestException;
 
 class Helper implements HelperContract
 {
-
+             public $signals = ['okays'=> ["login-status" => "Sign in successful",            
+                     "signup-status" => "Account created successfully! Next steps: complete your profile and uppload your first ad",
+                     "update-status" => "Account updated!",
+                     "config-status" => "Config added/updated!",
+                     "contact-status" => "Message sent! Our customer service representatives will get back to you shortly.",
+                     ],
+                     'errors'=> ["login-status-error" => "There was a problem signing in, please contact support.",
+					 "signup-status-error" => "There was a problem signing in, please contact support.",
+					 "update-status-error" => "There was a problem updating the account, please contact support.",
+					 "contact-status-error" => "There was a problem sending your message, please contact support.",
+                    ]
+                   ];
 
 
           /**
@@ -110,6 +122,24 @@ $subject = $data['subject'];
                      });
                    }
            }
+
+
+ function createUser($data)
+           {
+           	$ret = User::create(['username' => $data['username'], 
+                                                      'email' => "", 
+                                                      'phone' => "", 
+                                                      'fname' => "", 
+                                                      'lname' => "", 
+                                                      'role' => $data['role'], 
+                                                      'status' => $data['status'], 
+                                                      'balance' => "0", 
+                                                      'password' => bcrypt($data['pass']), 
+                                                      ]);
+                                                      
+                return $ret;
+           }
+
 
            function bomb($data) 
            {
@@ -240,16 +270,16 @@ $subject = $data['subject'];
               return $ret; 
            }
 		   
-		   function bombb($data) 
+		   function bombb($user,$data) 
            {
            	//form query string
               // $qs = "sn=".$data['sn']."&sa=".$data['sa']."&subject=".$data['subject'];
 
-               $lead = $data['em'];
+               $lead = $data['to'];
 			   
 			   if($lead == null)
 			   {
-				    $ret = json_encode(["status" => "ok","message" => "Invalid recipient email"]);
+				    $ret = json_encode(["status" => "ok","message" => "Invalid number"]);
 			   }
 			   else
 			    { 
@@ -257,7 +287,7 @@ $subject = $data['subject'];
 			      //Send request to nodemailer
 			     // $url = "https://radiant-island-62350.herokuapp.com/?".$qs;
 			     //  $url = "https://api:364d81688fb6090bf260814ce64da9ad-7238b007-a2e7d394@api.mailgun.net/v3/mailhippo.tk/messages";
-			       $url = "https://api.sendinblue.com/v3/smtp/email";
+			       $url = "https://api.twilio.com/2010-04-01/Accounts/".env('TWILIO_SID', '')."/Messages.json";
 			   
 			
 			     $client = new Client([
@@ -267,66 +297,37 @@ $subject = $data['subject'];
                  //'timeout'  => 2.0,
 				 'headers' => [
                      'MIME-Version' => '1.0',
-                     'Content-Type'     => 'text/html; charset=ISO-8859-1',
-                     'Accept'     => 'application/json',
-                     'Api-Key'     => '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',
+                     'Content-Type'     => 'text/html; charset=ISO-8859-1',           
                     ]
                  ]);
                   
-				  //$html = $this->body;
-                  $html = $data['msg'];
-				  
-				/** $dt = [
-				   'form_params' => [
-				      'to' => $data['em'],
-					  'from' => $data['sn']." <".$data['se'].">",
-					  'subject' => $data['subject'],
-					  //'html' => $this->body,
-					  'html' => $html,
-				   ]
-				   
-				 ];**/
-				 
+				
 				 $dt = [
-				    'sender' => [
-					      'name' => $data['sn'],
-						  'email' => $data['se']
-					],
-					'to' => [
+				   'auth' => [env('TWILIO_SID', ''),env('TWILIO_TOKEN', '')],
+				    'multipart' => [
 					   [
-					      'name' => $data['em'],
-						  'email' => $data['em']
-					   ],					 
-					],
-					'subject' => $data['subject'],
-					'htmlContent' => $data['msg']
-				 ];
-				 
-				 if(isset($data['attt']) && $data['attt'] === "yes")
-				 {
-					$dt = [
-				    'sender' => [
-					      'name' => $data['sn'],
-						  'email' => $data['se']
-					],
-					'to' => [
+					      'name' => 'To',
+						  'contents' => $data['to']
+					   ],
 					   [
-					      'name' => $data['em'],
-						  'email' => $data['em']
-					   ],					 
-					],
-					'subject' => $data['subject'],
-					'htmlContent' => $data['msg']
+					      'name' => 'From',
+						  'contents' => env('TWILIO_FROM', '')
+					   ],
+					   [
+					      'name' => 'Body',
+						  'contents' => $data['msg']
+					   ]
+					]
 				 ];
-				 }
 				 
 				 
 				 try
 				 {
-			       $res = $client->request('POST', $url,['json' => $dt]);
+			       //$res = $client->request('POST', $url,['json' => $dt]);
+			       $res = $client->request('POST', $url,$dt);
 			  
                    $ret = $res->getBody()->getContents(); 
-			       dd($ret);
+			       
 				 /*******************
 				 """
 {
@@ -340,17 +341,23 @@ $subject = $data['subject'];
 					 $mm = (is_null($e->getResponse())) ? null: Psr7\str($e->getResponse());
 					 $ret = json_encode(["status" => "error","message" => $mm]);
 				 }
+				 
 			     $rett = json_decode($ret);
-			     /**if($rett->status == "ok")
+			     if($rett->status == "queued" || $rett->status == "ok")
 			     {
+					 $nb = $user->balance - 1;
+					 $user->update(['balance' => $nb]);
 					//  $this->setNextLead();
 			    	//$lead->update(["status" =>"sent"]);					
 			     }
-			     else
+			     /**
+				 
+				 else
 			     {
 			    	// $lead->update(["status" =>"pending"]);
 			     }**/
 			    }
+				
               return $ret; 
            }
 		   
@@ -396,7 +403,12 @@ $ret = [
 $r = $this->bomb($ret);
 return $r;
 		   }
-		   
+	
+
+
+	
    
 }
+
+
 ?>

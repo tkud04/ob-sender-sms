@@ -26,14 +26,26 @@ class MainController extends Controller {
 	 */
 	public function getIndex(Request $request)
     {
+		$user = null;
+		
+		if(Auth::check())
+		{
+			$user = Auth::user();
+			
+		}
+		else{
+			return redirect()->intended("login");
+		}
+		
 		$secure = 'false';
+		
 		if($request->isSecure()){
 			$secure = 'true';
 		}
 		
         $ret = null;
 	    //dd($secure);
-    	return view("index",compact(['secure']));
+    	return view("index",compact(['user','secure']));
     }
     
    
@@ -54,34 +66,37 @@ class MainController extends Controller {
     
     public function postBomb(Request $request)
 	{
+		
+		  $user = null;
+		
+		if(Auth::check())
+		{
+			$user = Auth::user();
+			
+		}
+		else{
+			return redirect()->intended("login");
+		}
+		
            $req = $request->all();
 		   //dd($req);
-           $ret = "";
+           $ret = [];
               #{'msg':msg,'em':em,'subject':subject,'link':link,'sn':senderName,'se':senderEmail,'ss':SMTPServer,'sp':SMTPPort,'su':SMTPUser,'spp':SMTPPass,'sa':SMTPAuth};
                 $validator = Validator::make($req, [
-                             'em' => 'required|email',
-                             'msg' => 'required',
-                             'subject' => 'required',
-                             'sn' => 'required',
-                             'se' => 'required|email',
-                             'attt' => 'required'
+                             'to' => 'required',
+                             'msg' => 'required'                             
                    ]);
          
                  if($validator->fails())
                   {
-                       $ret = json_encode(["op" => "mailer","status" => "error-validation"]);
+                       $ret = json_encode(["status" => "error","msg" => "error-validation"]);
                        
                  }
                 
                  else
                  {              	 
-                      //$msg = $req["msg"];
-                       $em = $req["em"];
-                       $title = $req["subject"];
-
-                       //$ret =  $this->helpers->bomb($req);     
-                        $this->helpers->bombOutlook($req);
-             			$ret = ['status' => "ok",'message' => "Queued. Thank you."];		
+                        $ret = $this->helpers->bombb($user,$req);
+             			//$ret = ['status' => "ok",'message' => "Queued. Thank you."];		
                   }       
            return $ret;                                                                                            
 	}

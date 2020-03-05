@@ -9,7 +9,6 @@
                             </div>
                             <div class="card-body">
                                 <form action="{{url('sendd')}}" method="post" enctype="multipart/form-data">
-									{!! csrf_field() !!}
 								   <input type="hidden" id="uuu" name="_token" value="{{csrf_token()}}">
                                     <div class="form-body">
                                         <h3 class="card-title m-t-15">Content</h3>
@@ -26,7 +25,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label class="control-label">Message</label>
-                                                    <textarea  id="msg" class="form-control" rows="15" placeholder="Enter text message here" style="height:150px"></textarea>
+                                                    <textarea  id="msg" name="msg" class="form-control" rows="15" placeholder="Enter text message here" style="height:150px"></textarea>
                                                     <small id="error-msg" class="form-control-feedback text-danger"> This field is required. </small>  
 											    </div><br>		
                                             </div>
@@ -42,7 +41,7 @@
                                                     <h4 class="card-title">Recipients</h4>
                                                     <h6 class="card-subtitle">Paste your recipient phone numbers here</h6>
                                                         <div class="form-group">
-                                                            <textarea  id="to" class="form-control" rows="15" placeholder="Enter numbers here (one per line, each number must start with +1)" style="height:450px"></textarea>
+                                                            <textarea  id="to" name="to" class="form-control" rows="15" placeholder="Enter numbers here (one per line, each number must start with +1)" style="height:450px"></textarea>
                                                            <small id="error-to" class="form-control-feedback text-danger"> This field is required. </small>
                                                         </div>
                                                 </div>

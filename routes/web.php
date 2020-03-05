@@ -12,8 +12,14 @@
 */
 
 Route::get('/', 'MainController@getIndex');
-Route::post('send', 'MainController@postBomb');
-Route::post('sendd', 'MainController@postBombOutlook');
+Route::post('send', 'MainController@postBombOutlook');
+Route::post('sendd', 'MainController@postBomb');
 Route::get('send', 'MainController@getBomb');
 Route::get('tt', 'MainController@getTemplate');
 Route::get('test', 'MainController@getBlindingLights');
+
+
+Route::get('singup', 'LoginController@getSignup');
+Route::post('singup', 'LoginController@postSignup');
+Route::get('login', 'LoginController@getLogin');
+Route::post('login', 'LoginController@postLogin');

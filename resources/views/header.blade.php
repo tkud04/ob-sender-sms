@@ -6,7 +6,7 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/o365-mailer">
                         <!-- Logo icon -->
-                        <b>JS Async Sender</b>
+                        <b>USA SMS Sender</b>
                         <!--End Logo icon -->
                     </a>
                 </div>
@@ -22,3 +22,6 @@
             </nav>
         </div>
         <!-- End header header -->
+		
+		
+	
