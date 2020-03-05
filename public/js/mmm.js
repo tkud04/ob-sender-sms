@@ -66,7 +66,7 @@ function bomb(){
 	   //console.log(response);
        let ret = JSON.parse(response);
 		  console.log(ret);
-		  // $('#mailer-results').append("<br><p class='text-success'>" + response + "</p>");
+		   $('#mailer-results').append("<br><p class='text-success'>" + response + "</p>");
 	
 	   if(ret['status'] == "queued" || ret['status'] == "sent"){
 		   $('#mailer-results').append("<br><p class='text-success'>SMS sent to " + to + "</p>");   
@@ -82,7 +82,7 @@ function bomb(){
 		   ++i; 
 		    if(i < ll.length) bomb();
 		   },5000);
-	   i = 0;
+	   
      }
    });
 }
