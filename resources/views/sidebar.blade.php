@@ -1,4 +1,10 @@
-        <!-- Left Sidebar  -->
+<?php
+$bb = 0;
+if(!is_null($user)){
+	$bb = $user->balance;
+}
+?> 
+ <!-- Left Sidebar  -->
         <div class="left-sidebar">
             <!-- Sidebar scroll-->
             <div class="scroll-sidebar">
@@ -7,7 +13,7 @@
                     <ul id="sidebarnav">
                         <li class="nav-devider"></li>
                         <li class="nav-label">Home</li>
-                        <li class="nav-label">SMS left: <span id="bb">{{$user->balance}}</span></li>
+                        <li class="nav-label">SMS left: <span id="bb">{{$bb}}</span></li>
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
