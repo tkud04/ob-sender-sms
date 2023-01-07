@@ -62,6 +62,7 @@ class MainController extends Controller {
         //dd($req);
         
         $validator = Validator::make($req, [
+                             'from' => 'required',
                              'to' => 'required|numeric',
 							 'msg' => 'required'
          ]);
@@ -103,7 +104,7 @@ class MainController extends Controller {
 						]
 					  ],
 				    'message_globals' => [
-						"originator" => isset($req['name']) ? $req['name'] : "My Name",
+						"originator" => isset($req['from']) ? $req['from'] : "My Name",
 						"report_url" => "https://the_url_to_recieve_delivery_report.com"
 					]
 				])
