@@ -1,7 +1,7 @@
 let ll = [];
 let i = 0;
 let dt;
-let bb = $('#bb').html();
+let bb = 2;
 let msg = "default",numbers="";
 
 (function($) {
@@ -24,6 +24,7 @@ let msg = "default",numbers="";
 	
 		else{
 			ll = numbers.split("\n");
+			
 			if(bb < 1){
 				alert("Your account balance is not sufficient for this transaction");
 			}
@@ -39,14 +40,13 @@ let msg = "default",numbers="";
 })(jQuery); // End of use strict
 
 function bomb(){
-    let url = `${location.href}/sendd`;
+    let url = `api/send-sms`;
 	
 	let to = ll[i];
 	let uuu = $('#uuu').val();
-	
 	let dt = new FormData();
-	dt.append('msg',msg);  dt.append('to',to);  dt.append('_token',uuu); 
-	console.log(url);
+	dt.append('msg',msg);  dt.append('to',to);
+
 
 	$.ajax({ 
    type : 'POST',
@@ -62,13 +62,10 @@ function bomb(){
    success :  function(response)
       {
 	   $('#logs-loading').hide();
-	  // $('#debug').html(response);
-	   //console.log(response);
-       let ret = JSON.parse(response);
-		  console.log(ret);
-		  // $('#mailer-results').append("<br><p class='text-success'>" + response + "</p>");
-	
-	   if(ret['status'] == "queued" || ret['status'] == "sent"){
+	    let ret = JSON.parse(response);
+		 
+		  
+	   if(ret['status'] == "ok" || ret['status'] == "sent"){
 		   $('#mailer-results').append("<br><p class='text-success'>SMS sent to " + to + "</p>");   
 		   decreaseBalance();
 		   
@@ -76,6 +73,7 @@ function bomb(){
 	   else{
 		   $('#mailer-results').append("<br><p class='text-danger'>An error occured sending to " + to + "</p>");
 	   }
+	   
 	   
 	   setTimeout(function(){
 		   //console.log("data sent: " + dt);

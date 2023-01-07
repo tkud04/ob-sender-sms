@@ -1,5 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AdminController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,15 +16,10 @@
 |
 */
 
-Route::get('/', 'MainController@getIndex');
-Route::post('send', 'MainController@postBombOutlook');
-Route::post('sendd', 'MainController@postBomb');
-Route::get('send', 'MainController@getBomb');
-Route::get('tt', 'MainController@getTemplate');
-Route::get('test', 'MainController@getBlindingLights');
+Route::get('/', [MainController::class,'getIndex']);
+Route::get('contact', [MainController::class,'getContact']);
+Route::get('about', [MainController::class,'getAbout']);
+Route::get('why-us', [MainController::class,'getWhyUs']);
 
 
-Route::get('singup', 'LoginController@getSignup');
-Route::post('singup', 'LoginController@postSignup');
-Route::get('login', 'LoginController@getLogin');
-Route::post('login', 'LoginController@postLogin');
+

@@ -5,11 +5,11 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Helpers\Contracts\HelperContract; 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Session; 
 use Validator; 
 use Carbon\Carbon; 
-use App\User;
+use App\Models\User;
 
 class LoginController extends Controller {
 
@@ -27,14 +27,7 @@ class LoginController extends Controller {
 	 */
 	public function getSignup()
     {
-       $user = null;
-		
-		if(Auth::check())
-		{
-			$user = Auth::user();
-			return redirect()->intended('/');
-		}
-    	return view('signup',compact(['user']));
+		return redirect()->intended('/?xx=1');
     }
 
     
@@ -45,19 +38,17 @@ class LoginController extends Controller {
 	 */
 	public function getLogin(Request $request)
     {
-       
-		$user = null;
+       $user = null;
+       $req = $request->all();
+       $return = isset($req['return']) ? $req['return'] : '/';
 		
 		if(Auth::check())
 		{
 			$user = Auth::user();
-			return redirect()->intended("/");
+			return redirect()->intended($return);
 		}
-		else{
-		  $signals = $this->helpers->signals;
-    	return view('login',compact(['user','signals']));	
-		}
-		
+		$signals = $this->helpers->signals;
+    	return view('login',compact(['user','return','signals']));
     }
 
 
@@ -72,26 +63,26 @@ class LoginController extends Controller {
         #dd($req);
         
         $validator = Validator::make($req, [
-                             'pass' => 'required|min:6',
-                             'id' => 'required'
+                             'password' => 'required|min:6',
+                             'email' => 'required'
          ]);
          
          if($validator->fails())
          {
              $messages = $validator->messages();
              //return redirect()->back()->withInput()->with('errors',$messages);
-             return redirect()->intended('login')->with('errors',$messages);
-             //dd($messages);
+             session()->flash("login-status","error");
+				return redirect()->intended('/');
          }
          
          else
          {
 			
          	$remember = true; 
-             $return = isset($req['return']) ? $req['return'] : '/';
+             $return = isset($req['return']) ? $req['return'] : 'dashboard';
              
          	//authenticate this login
-            if(Auth::attempt(['email' => $req['id'],'password' => $req['pass'],'status'=> "ok"],$remember) || Auth::attempt(['username' => $req['id'],'password' => $req['pass'],'status'=> "ok"],$remember))
+            if(Auth::attempt(['email' => $req['email'],'password' => $req['password'],'status'=> "ok"],$remember))
             {
             	//Login successful               
                $user = Auth::user();          
@@ -103,7 +94,7 @@ class LoginController extends Controller {
 			else
 			{
 				session()->flash("login-status","error");
-				return redirect()->intended('login');
+				return redirect()->intended('/');
 			}
          }        
     }
@@ -115,12 +106,11 @@ class LoginController extends Controller {
     public function postSignup(Request $request)
     {
         $req = $request->all();
-
+        #dd($req);
         
         $validator = Validator::make($req, [
-                             'pass' => 'required|confirmed',
-                             //'email' => 'required|email',                            
-                             'username' => 'required',
+                             'password' => 'required|confirmed',
+                             'email' => 'required|email', 
                              #'g-recaptcha-response' => 'required',
                            # 'terms' => 'accepted',
          ]);
@@ -136,19 +126,21 @@ class LoginController extends Controller {
          else
          {
 			 #dd($req);
-            $req['role'] = "user";    
-            $req['status'] = "ok";           			
+             $req['role'] = "admin";
+           $req['status'] = "ok";  
+           $req['verified'] = "yes";         			
             
                        #dd($req);            
 
             $user =  $this->helpers->createUser($req); 
             
+			$req['user_id'] = $user->id;
 			
                                                     
              //after creating the user, send back to the registration view with a success message
              #$this->helpers->sendEmail($user->email,'Welcome To Disenado!',['name' => $user->fname, 'id' => $user->id],'emails.welcome','view');
              session()->flash("signup-status", "success");
-             return redirect()->intended('/');
+             return redirect()->intended('dashboard');
           }
     }
 	

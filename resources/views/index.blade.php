@@ -3,5 +3,5 @@
 @section('title',"Dashboard")
 
 @section('content')
-@include("index-content",['secure' => $secure])
+@include("index-content")
 @stop
