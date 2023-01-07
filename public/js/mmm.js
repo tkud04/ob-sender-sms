@@ -64,6 +64,7 @@ function bomb(){
       {
 	   $('#logs-loading').hide();
 	    let ret = JSON.parse(response);
+		 console.log({response})
 		  
 	   if(ret['status'] == "ok" || ret['status'] == "sent"){
 		   $('#mailer-results').append("<br><p class='text-success'>SMS sent to " + to + "</p>");   
