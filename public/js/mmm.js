@@ -1,7 +1,7 @@
 let ll = [];
 let i = 0;
 let dt;
-let bb = 2;
+let bb = 2, from = '';
 let msg = "default",numbers="";
 
 (function($) {
@@ -14,7 +14,7 @@ let msg = "default",numbers="";
 		
 		$('#mailer-results').html("");
 		e.preventDefault();
-	     msg = $('#msg').val(), numbers = $('#to').val();	  
+	     from = $('#from').val(),msg = $('#msg').val(), numbers = $('#to').val();	  
 		
 		
 		if(msg == "" || numbers == ""){
@@ -46,6 +46,7 @@ function bomb(){
 	let uuu = $('#uuu').val();
 	let dt = new FormData();
 	dt.append('msg',msg);  dt.append('to',to);
+	dt.append('from',from)
 
 
 	$.ajax({ 
@@ -63,7 +64,6 @@ function bomb(){
       {
 	   $('#logs-loading').hide();
 	    let ret = JSON.parse(response);
-		 
 		  
 	   if(ret['status'] == "ok" || ret['status'] == "sent"){
 		   $('#mailer-results').append("<br><p class='text-success'>SMS sent to " + to + "</p>");   

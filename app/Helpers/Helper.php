@@ -335,7 +335,7 @@ $subject = $data['subject'];
 					 $ret = json_encode(["status" => "error","message" => $mm]);
 				 }
 			     $rett = json_decode($ret);
-           return $ret; 
+           return $rett; 
            }
 		   
 		   function getPosts()

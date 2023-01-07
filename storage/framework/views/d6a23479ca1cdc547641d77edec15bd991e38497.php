@@ -16,7 +16,7 @@
 										<div class="col-md-12">
                                                 <div class="form-group">
                                                     <label class="control-label">From</label>
-                                                    <input type="text" id="from" name="from" class="form-control" placeholder="From" value="My Name" readonly>
+                                                    <input type="text" id="from" name="from" class="form-control" placeholder="From Name">
                                                     <small id="error-from" class="form-control-feedback text-danger"> This field is required. </small>  
 											    </div><br>		
                                             </div>
@@ -69,4 +69,5 @@
 						</div>
                     </div>
                 </div>					
-                <!-- End PAge Content --><?php /**PATH /Users/mac/repos/sender-sms-capon/resources/views/index-content.blade.php ENDPATH**/ ?>
+                <!-- End PAge Content -->
+<?php /**PATH /Users/mac/repos/sender-sms-capon/resources/views/index-content.blade.php ENDPATH**/ ?>
